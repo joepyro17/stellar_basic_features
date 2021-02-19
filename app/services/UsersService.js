@@ -1,6 +1,7 @@
 const StellarSDK = require('stellar-sdk');
-const fetch = require('node-fetch');
 const User = require('../models/User');
+const FriendBot = require('./FriendBot');
+require('dotenv').config();
 
 getAllUser = async () => {
   try {
@@ -26,11 +27,9 @@ createNewUser = async (req) => {
     user.secret_key = pair.secret();
 
     // Funding some lumen
-    const response = await fetch(
-      `https://friendbot.stellar.org?addr=${pair.publicKey()}`
-    );
-    const data = await response.json();
-    console.warn(data);
+    FriendBot.fundingLumen(pair.publicKey()).then((r) => {
+      console.log(r);
+    });
 
     const newUser = await user.save();
     return { success: true, body: newUser };
