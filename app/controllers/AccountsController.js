@@ -1,4 +1,4 @@
-const accountsService = require('../services/AccountsServices');
+const accountsService = require('../services/AccountsService');
 
 accountDetailByPublicKey = async (req, res) => {
   try {
