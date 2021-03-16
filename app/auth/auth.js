@@ -20,25 +20,26 @@ passport.use(
     async (req, email, password, done) => {
       const user = new User();
       user.name = req.body.name;
-      user.age = req.body.age;
+      user.age = Number(req.body.age);
       user.email = email;
       user.password = password;
-      // create a new keypair public and secret key
-      const pair = StellarSDK.Keypair.random();
-      console.debug('Keypair was generated');
-      console.debug(`Public Key: ${pair.publicKey()}`);
-      console.debug(`Secret Key: ${pair.secret()}`);
-      user.public_key = pair.publicKey();
-      user.secret_key = pair.secret();
-      // Funding some lumen
-      FriendBot.fundingLumen(pair.publicKey()).then((r) => {
-        console.log(r);
-      });
-
       try {
+        // create a new keypair public and secret key
+        const pair = StellarSDK.Keypair.random();
+        console.debug('Keypair was generated');
+        console.debug(`Public Key: ${pair.publicKey()}`);
+        console.debug(`Secret Key: ${pair.secret()}`);
+        user.public_key = pair.publicKey();
+        user.secret_key = pair.secret();
+        // Funding some lumen
+        FriendBot.fundingLumen(pair.publicKey()).then((r) => {
+          console.log(r);
+        });
+        // Save to DB
         const newUser = await user.save();
         return done(null, newUser);
       } catch (err) {
+        console.log('Pyro');
         return done(err);
       }
     }
@@ -56,6 +57,8 @@ passport.use(
     },
     async (req, email, password, done) => {
       try {
+        console.log('Login Function');
+
         const user = await User.findOne({ email });
 
         if (!user) return done(null, false, { message: 'User not found' });
@@ -66,8 +69,6 @@ passport.use(
 
         const body = { _id: user._id, email: user.email };
         const token = jwt.sign({ user: body }, process.env.JWT_TOP_SECRET);
-
-        // user = {...user, token: token};
 
         return done(null, token, { message: 'Logged in Successfully' });
       } catch (err) {

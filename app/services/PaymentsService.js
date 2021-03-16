@@ -8,7 +8,7 @@ sendPayments = async (req) => {
     const destinationId = req.body.destination;
     // Transaction will hold a built transaction we can resubmit if the result is unknown.
     let transaction;
-    let returnValue;
+    let returnValue = '';
 
     // First, check to make sure that the destination account exists.
     // You could skip this, but if the account does not exist, you will be charged
@@ -35,9 +35,8 @@ sendPayments = async (req) => {
             StellarSdk.Operation.payment({
               destination: destinationId,
               // Because Stellar allows transaction in many currencies, you must
-              // specify the asset type. The special "native" asset represents Lumens.
+              // specify the asset type. The special "native" asset represents Lumen.
               asset: StellarSdk.Asset.native(),
-              // amount: req.params.amount,
               amount: req.body.amount.toString(),
             })
           )
@@ -58,7 +57,7 @@ sendPayments = async (req) => {
       });
     return { success: true, body: returnValue };
   } catch (e) {
-    console.error('catch error');
+    console.log(e);
     return { success: false, error: e.message };
   }
 };

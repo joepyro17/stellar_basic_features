@@ -11,4 +11,13 @@ accountDetailByPublicKey = async (req, res) => {
   }
 };
 
-module.exports = { accountDetailByPublicKey };
+accountDetailByEmail = async (req, res) => {
+  try {
+    const account = await accountsService.getAccountDetailByEmail(req);
+    return res.send(account);
+  } catch (e) {
+    return res.status(500).send(e.message);
+  }
+};
+
+module.exports = { accountDetailByPublicKey, accountDetailByEmail };

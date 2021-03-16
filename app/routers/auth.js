@@ -7,8 +7,8 @@ const router = express.Router();
 router.post(
   '/signup',
   passport.authenticate('signup', { session: false }),
-  (req, res) => {
-    res.send(req.user);
+  async (req, res) => {
+    res.send({ success: true, body: req.user });
   }
 );
 // Login
