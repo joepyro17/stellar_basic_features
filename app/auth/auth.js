@@ -1,4 +1,5 @@
 const passport = require('passport');
+const Console = require('Console');
 const LocalStrategy = require('passport-local').Strategy;
 const jwt = require('jsonwebtoken');
 const JWTStrategy = require('passport-jwt').Strategy;
@@ -18,6 +19,8 @@ passport.use(
       passReqToCallback: true,
     },
     async (req, email, password, done) => {
+      Console.debug(`( Passport @ signup ) Signup from ${email}`);
+
       const user = new User();
       user.name = req.body.name;
       user.age = Number(req.body.age);
@@ -37,9 +40,11 @@ passport.use(
         });
         // Save to DB
         const newUser = await user.save();
+
+        Console.success('New user was created successfully');
         return done(null, newUser);
       } catch (err) {
-        console.log('Pyro');
+        Console.error(err);
         return done(err);
       }
     }
@@ -57,7 +62,7 @@ passport.use(
     },
     async (req, email, password, done) => {
       try {
-        console.log('Login Function');
+        Console.debug(`( Passport @ Login ) Login from ${email}`);
 
         const user = await User.findOne({ email });
 
@@ -70,8 +75,10 @@ passport.use(
         const body = { _id: user._id, email: user.email };
         const token = jwt.sign({ user: body }, process.env.JWT_TOP_SECRET);
 
+        Console.success('Logged in Successfully');
         return done(null, token, { message: 'Logged in Successfully' });
       } catch (err) {
+        Console.error(err);
         return done(err);
       }
     }

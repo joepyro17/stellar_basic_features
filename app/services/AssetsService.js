@@ -1,4 +1,5 @@
 const StellarSdk = require('stellar-sdk');
+const Console = require('Console');
 require('dotenv').config();
 
 createAsset = async (req) => {
@@ -60,8 +61,12 @@ createAsset = async (req) => {
         console.log('return value:', result);
         returnValue = result;
       });
+    Console.success(
+      `( AssetsService.js ) - createAsset return successfully `
+    );
     return { success: true, body: returnValue };
   } catch (e) {
+    Console.error(e.message());
     return { success: false, error: e.message };
   }
 };

@@ -1,4 +1,5 @@
 const StellarSDK = require('stellar-sdk');
+const Console = require('Console');
 const User = require('../models/User');
 require('dotenv').config();
 
@@ -11,8 +12,12 @@ getAccountDetailByPublicKey = async (publicKey) => {
     const server = new StellarSDK.Server(process.env.STELLAR_HORIZON_TESTNET);
     const account = await server.loadAccount(publicKey);
 
+    Console.success(
+      `( AccountsService.js ) - getAccountDetailByPublicKey return successfully `
+    );
     return { success: true, body: { user, accounts: account.balances } };
   } catch (e) {
+    Console.error(e.message());
     return { success: false, error: e.message };
   }
 };
@@ -26,9 +31,12 @@ getAccountDetailByEmail = async (req) => {
     const server = new StellarSDK.Server(process.env.STELLAR_HORIZON_TESTNET);
     const account = await server.loadAccount(user.public_key);
 
+    Console.success(
+      `( AccountsService.js ) - getAccountDetailByEmail return successfully `
+    );
     return { success: true, body: { user, accounts: account.balances } };
   } catch (e) {
-    console.log(e);
+    Console.error(e.message());
     return { success: false, error: e.message };
   }
 };

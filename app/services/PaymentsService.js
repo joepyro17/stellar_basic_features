@@ -1,4 +1,5 @@
 const StellarSdk = require('stellar-sdk');
+const Console = require('Console');
 require('dotenv').config();
 
 sendPayments = async (req) => {
@@ -55,9 +56,12 @@ sendPayments = async (req) => {
         console.log('return value:', result);
         returnValue = result;
       });
+    Console.success(
+      `( PaymentsService.js ) - sendPayments return successfully `
+    );
     return { success: true, body: returnValue };
   } catch (e) {
-    console.log(e);
+    Console.error(e.message());
     return { success: false, error: e.message };
   }
 };
