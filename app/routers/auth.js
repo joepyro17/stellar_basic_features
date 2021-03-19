@@ -3,6 +3,15 @@ const passport = require('passport');
 
 const router = express.Router();
 
+// Sign Up a Master user
+router.post(
+  '/signup_master',
+  passport.authenticate('signup_master', { session: false }),
+  async (req, res) => {
+    res.send({ success: true, body: req.user });
+  }
+);
+
 // Sign Up a new user
 router.post(
   '/signup',

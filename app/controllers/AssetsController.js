@@ -7,7 +7,7 @@ createAsset = async (req, res) => {
     Console.success(`createAsset return successfully`);
     return res.send(result);
   } catch (e) {
-    Console.error(e.message());
+    Console.error(e.message);
     return res.status(500).send(e.message);
   }
 };

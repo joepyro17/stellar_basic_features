@@ -13,7 +13,7 @@ fundingLumen = async (publicKey) => {
     );
     return data;
   } catch (e) {
-    Console.error(e.message());
+    Console.error(e.message);
   }
 };
 

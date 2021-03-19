@@ -4,13 +4,11 @@ require('dotenv').config();
 
 getAllUser = async () => {
   try {
-    const users = await User.find();
-    Console.success(
-      `( UsersService.js ) - getAllUser return successfully `
-    );
+    const users = await User.find().select('-password');
+    Console.success(`( UsersService.js ) - getAllUser return successfully `);
     return { success: true, body: users };
   } catch (e) {
-    Console.error(e.message());
+    Console.error(e.message);
     return { success: false, error: e.message };
   }
 };

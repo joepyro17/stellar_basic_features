@@ -3,13 +3,11 @@ const accountsService = require('../services/AccountsService');
 
 accountDetailByPublicKey = async (req, res) => {
   try {
-    const account = await accountsService.getAccountDetailByPublicKey(
-      req.params.public_key
-    );
+    const account = await accountsService.getAccountDetailByPublicKey(req);
     Console.success(`accountDetailByPublicKey return successfully`);
     return res.send(account);
   } catch (e) {
-    Console.error(e.message());
+    Console.error(e.message);
     return res.status(500).send(e.message);
   }
 };
@@ -20,7 +18,7 @@ accountDetailByEmail = async (req, res) => {
     Console.success(`accountDetailByEmail return successfully`);
     return res.send(account);
   } catch (e) {
-    Console.error(e.message());
+    Console.error(e.message);
     return res.status(500).send(e.message);
   }
 };

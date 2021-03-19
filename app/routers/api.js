@@ -11,7 +11,7 @@ const router = express.Router();
 router.get('/users', usersController.index);
 // Get account detail by public key
 router.post(
-  '/account_detail_by_public_key/:public_key',
+  '/account_detail_by_public_key',
   accountsController.accountDetailByPublicKey
 );
 // Get account detail by email

@@ -7,9 +7,40 @@ sendPayments = async (req) => {
     const server = new StellarSdk.Server(process.env.STELLAR_HORIZON_TESTNET);
     const sourceKeys = StellarSdk.Keypair.fromSecret(req.body.secret_key);
     const destinationId = req.body.destination;
+
+    // Asset issuing Keys
+    const issuingKeys = StellarSdk.Keypair.fromSecret(
+      process.env.ISSUING_SECRET_KEY
+    );
+    Console.debug(issuingKeys);
+
     // Transaction will hold a built transaction we can resubmit if the result is unknown.
     let transaction;
     let returnValue = '';
+    let assetType;
+    let issuingPublic = '';
+    let assetCode = '';
+
+    if (!req.body.issuing_public) {
+      issuingPublic = issuingKeys.publicKey();
+    } else {
+      issuingPublic = req.body.issuing_public;
+    }
+    Console.debug(issuingPublic);
+
+    if (!req.body.asset_code) {
+      assetCode = process.env.ASSET_CODE;
+    } else {
+      assetCode = req.body.asset_code;
+    }
+    Console.debug(assetCode);
+
+    if (assetCode === 'Native') {
+      assetType = StellarSdk.Asset.native();
+    } else {
+      assetType = new StellarSdk.Asset(assetCode, issuingPublic);
+    }
+    Console.debug(assetType);
 
     // First, check to make sure that the destination account exists.
     // You could skip this, but if the account does not exist, you will be charged
@@ -27,6 +58,7 @@ sendPayments = async (req) => {
         return server.loadAccount(sourceKeys.publicKey());
       })
       .then((sourceAccount) => {
+        Console.debug('Start building the transacton');
         // Start building the transaction.
         transaction = new StellarSdk.TransactionBuilder(sourceAccount, {
           fee: StellarSdk.BASE_FEE,
@@ -37,7 +69,7 @@ sendPayments = async (req) => {
               destination: destinationId,
               // Because Stellar allows transaction in many currencies, you must
               // specify the asset type. The special "native" asset represents Lumen.
-              asset: StellarSdk.Asset.native(),
+              asset: assetType,
               amount: req.body.amount.toString(),
             })
           )
@@ -47,8 +79,10 @@ sendPayments = async (req) => {
           // Wait a maximum of three minutes for the transaction
           .setTimeout(Number(process.env.PAYMENT_TIMEOUT))
           .build();
+        Console.debug('Start Sign the transaction');
         // Sign the transaction to prove you are actually the person sending it.
         transaction.sign(sourceKeys);
+        Console.debug('Start submit transaction');
         // And finally, send it off to Stellar!
         return server.submitTransaction(transaction);
       })
@@ -61,7 +95,7 @@ sendPayments = async (req) => {
     );
     return { success: true, body: returnValue };
   } catch (e) {
-    Console.error(e.message());
+    Console.error(e.message);
     return { success: false, error: e.message };
   }
 };

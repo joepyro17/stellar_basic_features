@@ -30,7 +30,6 @@ const UserSchema = new mongoose.Schema(
     },
     secret_key: {
       type: String,
-      select: false,
     },
   },
   {
