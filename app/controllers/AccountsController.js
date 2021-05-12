@@ -23,4 +23,15 @@ accountDetailByEmail = async (req, res) => {
   }
 };
 
-module.exports = { accountDetailByPublicKey, accountDetailByEmail };
+transactionHistory = async (req, res) => {
+  try {
+    const transaction = await accountsService.getTransactionHistory(req);
+    Console.success(`transactionHistory return successfully`);
+    return res.send(transaction);
+  } catch (e) {
+    Console.error(e.message);
+    return res.status(500).send(e.message);
+  }
+}
+
+module.exports = { accountDetailByPublicKey, accountDetailByEmail, transactionHistory };

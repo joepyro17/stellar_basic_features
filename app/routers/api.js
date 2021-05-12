@@ -19,10 +19,14 @@ router.post(
   '/account_detail_by_username',
   accountsController.accountDetailByEmail
 );
+// Transaction
+router.post('/transaction_history', accountsController.transactionHistory);
 
 // Send Payment
 router.post('/send_payment', paymentsController.sendPayment);
 // Create Asset
 router.post('/create_asset', assetsController.createAsset);
+
+
 
 module.exports = router;

@@ -93,7 +93,17 @@ sendPayments = async (req) => {
     Console.success(
       `( PaymentsService.js ) - sendPayments return successfully `
     );
-    return { success: true, body: returnValue };
+    return {
+      success: true,
+      headers: {
+        'Access-Control-Allow-Origin': '*', // Required for CORS support to work
+        'Access-Control-Allow-Credentials': true, // Required for cookies, authorization headers with HTTPS
+        'Access-Control-Allow-Headers':
+          'Origin,Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,locale',
+        'Access-Control-Allow-Methods': 'POST, OPTIONS',
+      },
+      body: returnValue,
+    };
   } catch (e) {
     Console.error(e.message);
     return { success: false, error: e.message };
